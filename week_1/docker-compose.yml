@@ -1,0 +1,69 @@
+services:
+  nginx_ag:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - "../infra/nginx/api_gateway.conf:/etc/nginx/nginx.conf"
+    depends_on:
+      - api_gateway_1
+      - api_gateway_2
+  api_gateway_1:
+    image: api_gateway
+    environment:
+      - host=0.0.0.0
+      - port=3000
+      - instance=ag1
+    depends_on:
+      - nats
+
+  api_gateway_2:
+    image: api_gateway
+    environment:
+      - host=0.0.0.0
+      - port=3000
+      - instance=ag2
+    depends_on:
+      - nats
+  nginx_catalog:
+    image: nginx
+    volumes:
+      - "../infra/nginx/catalog.conf:/etc/nginx/nginx.conf"
+  catalog_1:
+    image: catalog_service
+    environment:
+      - host=0.0.0.0
+      - port=3000
+      - instance=cs1
+  catalog_2:
+    image: catalog_service
+    environment:
+      - host=0.0.0.0
+      - port=3000
+      - instance=cs2
+  nginx_user:
+    image: nginx
+    volumes:
+      - "../infra/nginx/user.conf:/etc/nginx/nginx.conf"
+  user_1:
+    image: user_service
+    environment:
+      - host=0.0.0.0
+      - port=3000
+      - instance=user1
+  user_2:
+    image: user_service
+    environment:
+      - host=0.0.0.0
+      - port=3000
+      - instance=user2
+  scylla:
+    image: scylladb/scylla
+    command: ["--smp", "1", "--memory", "1G", "--overprovisioned", "1"]
+    volumes:
+      - scylla-data:/var/lib/scylla
+  nats:
+    image: nats:2.10
+
+volumes:
+  scylla-data:

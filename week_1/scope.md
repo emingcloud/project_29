@@ -1,0 +1,18 @@
+- API Gateway service
+  - Authorization/Authentication
+  - rate limitting
+  - routing
+  - request validation
+- User service
+  - Signup
+  - Signin
+  - Profile
+- Catelog service
+  - Movies
+  - Genre
+
+- Event
+  - user:signup
+  - user:signin
+  - catalog:movie:created
+  - catalog:genre:created
